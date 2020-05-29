@@ -1,8 +1,10 @@
+import sys
 import os
 import tempfile
 import re
 import json
 import requests
+import zipfile
 from urllib.parse import unquote
 
 ch_def = [
@@ -56,31 +58,52 @@ def get_url(url, fn, del_first=False):
     if del_first and os.path.isfile(fn):
         os.remove(fn)
 
-    try:
-        r = requests.get(url, proxies=None, stream=True)
-        with open(fn_temp, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=1024):
-                if chunk: # filter out keep-alive new chunks
-                    f.write(chunk)
-                    #f.flush() commented by recommendation
+    while True:
+        try:
+            r = requests.get(url, proxies=None, stream=True)
+            with open(fn_temp, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=1024):
+                    if chunk: # filter out keep-alive new chunks
+                        f.write(chunk)
+                        #f.flush() commented by recommendation
 
-        if os.path.isfile(fn_temp):
-            if os.path.isfile(fn):
-                os.remove(fn)
-            os.rename(fn_temp, fn)
-        return
+            if os.path.isfile(fn_temp):
+                if os.path.isfile(fn):
+                    os.remove(fn)
+                os.rename(fn_temp, fn)
+            return
 
-    except Exception as e:
-        print('Cannot download:\n%s\n%s' % (url, str(e)))
+        except Exception as e:
+            print('Cannot download:\n%s\n%s' % (url, str(e)))
 
 
 print('Downloading list...')
 items = get_remote_addons_list(ch_def)
-if items:
-    print('Downloaded')
-    res = sorted([item['url'] for item in items])
-    with open('addons_links.txt', 'w') as f:
-        for s in res:
-            f.write(s+'\n')
-else:
+if not items:
     print('Cannot download')
+    sys.exit(0)
+
+print('Downloaded list, %d items'%len(items))
+
+res = sorted([item['url'] for item in items])
+'''
+with open('addons_links.txt', 'w') as f:
+    for s in res:
+        f.write(s+'\n')
+'''
+
+dir = 'addons'
+if not os.path.isdir(dir):
+    os.mkdir(dir)
+
+for (i, url) in enumerate(res):
+    kind = url.split('/')[-1].split('.')[0]
+    fname = url.split('/')[-1]
+    print('  getting %d/%d: [%s] %s' % (i+1, len(res), kind, fname))
+
+    dir2 = os.path.join(dir, kind)
+    if not os.path.isdir(dir2):
+        os.mkdir(dir2)
+    fn_zip = os.path.join(dir2, fname)
+
+    get_url(url, fn_zip, True)
