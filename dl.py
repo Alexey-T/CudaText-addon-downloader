@@ -94,18 +94,19 @@ with open('addons_links.txt', 'w') as f:
         f.write(s+'\n')
 '''
 
-dir = 'addons'
-if not os.path.isdir(dir):
-    os.mkdir(dir)
+dir1 = 'addons'
+if not os.path.isdir(dir1):
+    os.mkdir(dir1)
 
 for (i, url) in enumerate(res):
+
     kind = url.split('/')[-1].split('.')[0]
     fname = url.split('/')[-1]
-    print('  getting %d/%d: [%s] %s' % (i+1, len(res), kind, fname))
+    print('getting %d/%d: %s' % (i+1, len(res), fname))
 
-    dir2 = os.path.join(dir, kind)
-    if not os.path.isdir(dir2):
-        os.mkdir(dir2)
-    fn_zip = os.path.join(dir2, fname)
+    dir = os.path.join(dir1, kind)
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+    fn_zip = os.path.join(dir, fname)
 
     get_url(url, fn_zip, True)
