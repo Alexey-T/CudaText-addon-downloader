@@ -5,6 +5,7 @@ import re
 import json
 import requests
 import zipfile
+import time
 from urllib.parse import unquote
 
 ch_def = [
@@ -74,7 +75,8 @@ def get_url(url, fn, del_first=False):
             return
 
         except Exception as e:
-            print('Cannot download:\n%s\n%s' % (url, str(e)))
+            print('error:', str(e))
+            time.sleep(2)
 
 
 print('Downloading list...')
