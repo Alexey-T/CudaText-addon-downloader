@@ -80,17 +80,16 @@ def get_url(url, fn, del_first=False):
 
 
 print('Downloading list...')
-items = get_remote_addons_list(ch_def)
-if not items:
+data = get_remote_addons_list(ch_def)
+if not data:
     print('Cannot download')
     sys.exit(0)
+print('Downloaded list')
 
-print('Downloaded list, %d items'%len(items))
-
-res = sorted([item['url'] for item in items])
+data = sorted([item['url'] for item in data])
 '''
 with open('addons_links.txt', 'w') as f:
-    for s in res:
+    for s in data:
         f.write(s+'\n')
 '''
 
@@ -98,11 +97,11 @@ dir1 = 'CudaText_addons'
 if not os.path.isdir(dir1):
     os.mkdir(dir1)
 
-for (i, url) in enumerate(res):
+for (i, url) in enumerate(data):
 
     fname = url.split('/')[-1]
     kind = fname.split('.')[0]
-    print('get %d/%d: %s' % (i+1, len(res), fname))
+    print('get %d/%d: %s' % (i+1, len(data), fname))
 
     dir = os.path.join(dir1, kind)
     if not os.path.isdir(dir):
