@@ -100,8 +100,8 @@ if not os.path.isdir(dir1):
 
 for (i, url) in enumerate(res):
 
-    kind = url.split('/')[-1].split('.')[0]
     fname = url.split('/')[-1]
+    kind = fname.split('.')[0]
     print('get %d/%d: %s' % (i+1, len(res), fname))
 
     dir = os.path.join(dir1, kind)
