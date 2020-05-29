@@ -94,7 +94,7 @@ with open('addons_links.txt', 'w') as f:
         f.write(s+'\n')
 '''
 
-dir1 = 'addons'
+dir1 = 'CudaText_addons'
 if not os.path.isdir(dir1):
     os.mkdir(dir1)
 
@@ -102,7 +102,7 @@ for (i, url) in enumerate(res):
 
     kind = url.split('/')[-1].split('.')[0]
     fname = url.split('/')[-1]
-    print('getting %d/%d: %s' % (i+1, len(res), fname))
+    print('get %d/%d: %s' % (i+1, len(res), fname))
 
     dir = os.path.join(dir1, kind)
     if not os.path.isdir(dir):
