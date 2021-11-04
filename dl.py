@@ -100,7 +100,7 @@ if not os.path.isdir(dir1):
 
 for (i, url) in enumerate(data):
 
-    fname = url.split('/')[-1]
+    fname = unquote(url.split('/')[-1])
     kind = fname.split('.')[0]
     print('get %d/%d: %s' % (i+1, len(data), fname))
 
